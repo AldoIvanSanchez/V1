@@ -1,0 +1,1726 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vplaner</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous">
+    </script>
+    <style>
+        html{
+            width:auto;
+            height:100%;
+            }
+        body{
+            width:auto;
+            height:100%;
+            font-family: Arial;
+        }
+        /* letras desplegadas de los valores de vacaciones */
+        .cal_legend{
+            width: auto;
+            height: auto;
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Style the tab es el cuadro gris que contiene el calendario*/
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            width:1300px;
+            height: 550px;
+            text-size-adjust: 20px;
+            margin-left: auto;
+            margin-right: 20px;
+            position: relative;
+            left: 80px;
+
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: rgb(122, 130, 136);
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: rgb(98, 196, 98);
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            position: relative;
+            top: -100px;
+            /* margin-left: 20px;
+            padding: 6px 12px; */
+            /* border: 1px solid rgb(98, 196, 98);
+            border-top: none; */
+        }
+
+        /* grid */
+        .calendario {
+            position: relative;
+            left: -150px;
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(35, .8fr);
+            grid-auto-columns: auto;
+
+        }
+
+        .contener-cal {
+            width: auto;
+            height: auto;
+            text-size-adjust: 20px;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            /* justify-content: flex-end; */
+            padding-bottom: 350px;
+            margin-top: -600px;
+            margin-left: 530px;
+            
+        }
+
+        h1 {
+            position: relative;
+            left: 550px ;
+            /* right: -700px; */
+        }
+
+        .filtros{
+            position: relative;
+            width: 250px;
+            top: -500px;
+            left:100px;
+            display: grid; 
+            grid-template-columns: repeat(2,1fr);
+            font-size: 17px;
+        }
+        .radio{
+            position: relative;
+            left: 10px;
+            top: 10px;
+            }
+        #projectos{
+            position: relative;
+            top: -485px;
+            left: 100px;
+            width: 150px;
+            height: 25px;
+        }
+        #namesStorage{
+            position: relative;
+            top: -580px;
+            left: 100px;
+            width: 150px;
+            height: 25px;
+        } 
+        #namesPower{
+            position: relative;
+            top: -450px;
+            left: 100px;
+            width: 150px;
+            height: 25px;
+        } 
+        #turnos{
+            position: relative;
+            left: 260px;
+            top: -595px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <!-- contenido de calendario -->
+    <div class="contCal">
+        <h1>Calendario</h1>
+
+        <div class="tab">
+            <button class="tablinks" onclick="Month(event, 'January')">January</button>
+            <button class="tablinks" onclick="Month(event, 'February')">February</button>
+            <button class="tablinks" onclick="Month(event, 'March')">March</button>
+            <button class="tablinks" onclick="Month(event, 'April')">April</button>
+            <button class="tablinks" onclick="Month(event, 'May')">May</button>
+            <button class="tablinks" onclick="Month(event, 'June')">June</button>
+            <button class="tablinks" onclick="Month(event, 'July')">July</button>
+            <button class="tablinks" onclick="Month(event, 'August')">August</button>
+            <button class="tablinks" onclick="Month(event, 'September')">September</button>
+            <button class="tablinks" onclick="Month(event, 'October')">October</button>
+            <button class="tablinks" onclick="Month(event, 'November')">November</button>
+            <button class="tablinks" onclick="Month(event, 'Dicember')">Dicember</button>
+        </div>
+
+        <div class="filtros">
+            <b>Projecto</b><br>
+            <label style="margin-left:20px" id="stora">Storage</label>
+            <input type="radio" name="area" value="storage" class="radio" onclick="storage()" ;>
+            <label  id="powe">Power System </label>
+            <input type="radio" name="area" value="power" class="radio" onclick="power()" ;>
+            
+        </div>
+        
+        <select name="projectos" id="projectos" onchange="area();">
+            <option value="1" id="z">Z </option>
+            <option value="2" id="Ess">ESS</option>
+            <option value="3" id="build">build</option>
+            <option value="4" id="pruebas">pruebas</option>
+            <option value="5" id="tired">tear down</option>
+            <option value="6" id="rackm">rack merge</option>
+            <option value="7" id="anaconda">Anaconda</option>
+            <option value="8" id="mes">MES</option>
+            <option value="9" id="appliences">Appliences</option>
+        </select>
+
+        <div id="turnos">
+            <label style="margin-left:20px; "><b>Turno</b></label><br>
+            <input type="checkbox" id="T1" name="T1" >
+            <label for="T1"> T1</label><br>
+            <input type="checkbox" id="T2" name="T2" >
+            <label for="T2"> T2</label><br>
+            <input type="checkbox" id="T3" name="T3" >
+            <label for="T3"> T3</label><br>
+            <input type="checkbox" id="Admin" name="Admin" >
+            <label for="Admin"> Admin.</label><br>
+       </div>
+        <!-- turno retornar a valor origina -->
+        <div id="namesStorage">
+            <div id="baseAnac">
+                <li>julio</li>
+                <li>Andy</li>
+            </div>
+            <div id="baseMes">
+                <li>Andy</li>
+                <li>Jessie</li>
+            </div>
+            <div id="baseAppli">
+                <li>Noel</li>
+                <li>sam</li>
+            </div>
+
+        </div>
+        <div id="namesPower">
+            
+            <div id="baseZ"> 
+                <li>Alex</li>
+                <li>Andrea</li>
+            </div>
+            <div id="baseEss">
+                <li>Charlie</li>
+                <li>Cameron</li>
+            </div>
+            <div id="baseBuild">
+                <li>Eider</li>
+                <li>Lucian</li>
+            </div>
+            <div id="basePrueba">
+                <li>Montserrat</li>
+                <li>Sasha</li>
+            </div>
+            <div id="baseTire">
+                <li>Pau</li>
+                <li>Trinidad</li>
+            </div>
+            <div id="baseRack">
+                <li>Santana</li>
+            </div>
+        </div>
+        
+        <script>
+
+        function storage() {
+            document.getElementById("z").style.display='none';
+            document.getElementById("Ess").style.display='none';
+            document.getElementById("build").style.display='none';
+            document.getElementById("pruebas").style.display='none';
+            document.getElementById("tired").style.display='none';
+            document.getElementById("rackm").style.display='none';
+            document.getElementById("namesPower").style.display='none';
+
+            document.getElementById("anaconda").style.display='block';
+            document.getElementById("mes").style.display='block';
+            document.getElementById("appliences").style.display='block';
+
+            document.getElementById("namesStorage").style.display='block';
+
+            // reset values
+            document.getElementById("baseAppli").style.display='block';
+            document.getElementById("baseMes").style.display='block';
+            document.getElementById("baseAnac").style.display='block';
+        }
+        function power() {
+            // mover los nombres
+            document.getElementById("namesPower").style.top = "-580px";
+            // mostrar solo storage
+            document.getElementById("anaconda").style.display='none';
+            document.getElementById("mes").style.display='none';
+            document.getElementById("appliences").style.display='none';
+            document.getElementById("namesStorage").style.display='none';
+            // ocultar power 
+            document.getElementById("z").style.display='block';
+            document.getElementById("Ess").style.display='block';
+            document.getElementById("build").style.display='block';
+            document.getElementById("pruebas").style.display='block';
+            document.getElementById("tired").style.display='block';
+            document.getElementById("rackm").style.display='block';
+            document.getElementById("namesPower").style.display='block';
+        }
+        function area(){
+            var area = document.getElementById("projectos").value;
+            console.log(area);
+            if(area=="7"){
+                document.getElementById("baseMes").style.display='none';
+                document.getElementById("baseAppli").style.display='none';
+                document.getElementById("baseAnac").style.display='block';
+            }if(area=="8"){
+                document.getElementById("baseMes").style.display='block';
+                document.getElementById("baseAppli").style.display='none';
+                document.getElementById("baseAnac").style.display='none';
+            }else{
+                document.getElementById("baseMes").style.display='none';
+                document.getElementById("baseAppli").style.display='block';
+                document.getElementById("baseAnac").style.display='none';
+            }
+        }
+        </script>
+
+<!-- 
+        poner posicion absoluta para que se quede fijo el calendario en una posicion -->
+        
+
+        <div class="contener-cal">
+            <div id="January" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li class="a1">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li id="last">31</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="February" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li class="a2">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="March" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li class="a3">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li id="last">31</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="April" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li class="a4">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li>_</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="May" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li id="a5">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li>31</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="June" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li id="a6">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li>_</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="July" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li id="a7">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li>31</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="August" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li id="a8">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li>31</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="September" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li id="a9">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li> 
+                    <li>_</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="October" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li id="a10">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li id="last">31</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="November" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li id="a11">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li>_</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div id="Dicember" class="tabcontent">
+                <ol class="calendario">
+                    <li>Worked days</li>
+                    <li>Vacaciones disponibles</li>
+                    <li>Tiempo Extra</li>
+                    <li>Vacaciones tomadas</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                    <li>Sat</li>
+                    <li>Sun</li>
+                    <li>Mon</li>
+                    <li>Tue</li>
+                    <li>Wen</li>
+                    <li>Thu</li>
+                    <li>Fri</li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    <li id="a12">1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>7</li>
+                    <li>8</li>
+                    <li>9</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li id="last">31</li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                    <li>_</li>
+                </ol>
+            </div>
+            <div style="font-size:74%" class="cal_legend" id="cal_legend">
+                <div class="cal_typeN">
+                    <h5>N</h5>&emsp;
+                </div>
+                <div class="cal_label">Not available</div>
+                <div class="cal_type10">
+                    <h5>A</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Available</div>
+                <div class="cal_type1">
+                    <h5>V</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Vacation</div>
+                <div class="cal_type2">
+                    <h5>H</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Half-day vacation</div>
+                <div class="cal_typeH">
+                    <h5>P</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Public Holiday</div>
+                <div class="cal_type11">
+                    <h5>P</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Personal Holiday</div>
+                <div class="cal_type3">
+                    <h5>E</h5><br>
+                </div>
+                <div class="cal_label">Education / Training</div>
+                <div class="cal_type4">
+                    <h5>O</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Other</div>
+                <div class="cal_type5">
+                    <h5>S</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Sick</div>
+                <div class="cal_type6">
+                    <h5>C</h5>&emsp;&ensp;
+                </div>
+                
+            </div><br>
+            <div style="font-size:74%" class="cal_legend">
+                <div class="cal_label">Customer meeting</div>
+                <div class="cal_type7">
+                    <h5>W</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Work @Home</div>
+                <div class="cal_type8">
+                    <h5>X</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Project X</div>
+                <div class="cal_type9">
+                    <h5>Y</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Project Y</div>
+                <div class="cal_type13">
+                    <h5>I</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Work @IBM Location</div>
+                <div class="cal_type14">
+                    <h5>C</h5>&emsp;&ensp;
+                </div>
+                <div class="cal_label">Work @Client Premises</div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        function Month(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+
+</body>
+
+</html>
